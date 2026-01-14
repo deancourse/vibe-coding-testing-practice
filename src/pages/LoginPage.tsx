@@ -13,7 +13,7 @@ export const LoginPage: React.FC = () => {
     const [apiError, setApiError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { login, isAuthenticated, sessionExpiredMessage, clearSessionExpiredMessage } = useAuth();
+    const { login, isAuthenticated, authExpiredMessage, clearAuthExpiredMessage } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,11 +25,11 @@ export const LoginPage: React.FC = () => {
     }, [isAuthenticated, navigate]);
 
     useEffect(() => {
-        if (sessionExpiredMessage) {
-            setApiError(sessionExpiredMessage);
-            clearSessionExpiredMessage();
+        if (authExpiredMessage) {
+            setApiError(authExpiredMessage);
+            clearAuthExpiredMessage();
         }
-    }, [sessionExpiredMessage, clearSessionExpiredMessage]);
+    }, [authExpiredMessage, clearAuthExpiredMessage]);
 
     const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

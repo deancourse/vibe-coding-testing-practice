@@ -7,11 +7,11 @@ interface AuthContextType {
     token: string | null;
     isLoading: boolean;
     isAuthenticated: boolean;
-    sessionExpiredMessage: string | null;
+    authExpiredMessage: string | null;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     checkAuth: () => Promise<boolean>;
-    clearSessionExpiredMessage: () => void;
+    clearAuthExpiredMessage: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
     const [isLoading, setIsLoading] = useState(true);
-    const [sessionExpiredMessage, setSessionExpiredMessage] = useState<string | null>(null);
+    const [authExpiredMessage, setAuthExpiredMessage] = useState<string | null>(null);
 
     const logout = useCallback(() => {
         localStorage.removeItem(TOKEN_KEY);
@@ -32,8 +32,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
     }, []);
 
-    const clearSessionExpiredMessage = useCallback(() => {
-        setSessionExpiredMessage(null);
+    const clearAuthExpiredMessage = useCallback(() => {
+        setAuthExpiredMessage(null);
     }, []);
 
     const checkAuth = useCallback(async (): Promise<boolean> => {
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const handleUnauthorized = (event: CustomEvent<string>) => {
             logout();
             if (event.detail) {
-                setSessionExpiredMessage(event.detail);
+                setAuthExpiredMessage(event.detail);
             }
         };
 
@@ -88,11 +88,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         token,
         isLoading,
         isAuthenticated: !!token && !!user,
-        sessionExpiredMessage,
+        authExpiredMessage,
         login,
         logout,
         checkAuth,
-        clearSessionExpiredMessage,
+        clearAuthExpiredMessage,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
